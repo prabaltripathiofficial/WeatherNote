@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchWeatherData } from '../../lib/redux/weatherSlice'
 import WeatherDisplay from '../../components/WeatherDisplay'
 import { RootState } from '../../lib/redux/store'
 
-export default function WeatherPage() {
+const WeatherComponent = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const dispatch = useDispatch()
@@ -27,9 +27,17 @@ export default function WeatherPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <WeatherDisplay
-        localityName={localityName || 'Unknown Location'} // Default to 'Unknown Location' if no name
+        localityName={localityName || 'Unknown Location'} 
         onBackToSearch={handleBackToSearch}
       />
     </div>
+  )
+}
+
+export default function WeatherPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WeatherComponent />
+    </Suspense>
   )
 }
